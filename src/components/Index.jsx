@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
     flexRender, 
     getCoreRowModel, 
@@ -7,7 +7,16 @@ import {
     getSortedRowModel, 
     useReactTable 
 } from '@tanstack/react-table'
-import { Box, ButtonGroup, Button, Icon, Text} from "@chakra-ui/react"
+import {
+  Box,
+  ButtonGroup,
+  Button, 
+  Icon,
+  Flex,
+  Heading,
+  Spacer,
+  Text
+} from '@chakra-ui/react';
 import DATA from '../hooks/data.js' 
 import Filter from './Filter.jsx'
 import SortIcon from './icons/SortIcon.jsx'
@@ -18,6 +27,17 @@ export default function Index() {
 
   const [data, setData] = useState(DATA)
   const [globalFilter, setGlobalFilter] = useState("")
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const username = localStorage.getItem('username');
+    const firstName = localStorage.getItem('first_name');
+    const lastName = localStorage.getItem('last_name');
+
+    if (username && firstName && lastName) {
+      setUser({ username, firstName, lastName });
+    }
+  }, []);
 
   const columns = [
     {
@@ -33,6 +53,11 @@ export default function Index() {
     {
       accessorKey: 'evento', 
       header: 'Evento', 
+      cell: (props) => <p>{props.getValue()}</p>
+    },
+    {
+      accessorKey: 'origen', 
+      header: 'Origen del mensaje', 
       cell: (props) => <p>{props.getValue()}</p>
     },
     {
@@ -57,6 +82,11 @@ export default function Index() {
     }
   ]
 
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
+
   const table = useReactTable({
     data,
     columns, 
@@ -76,11 +106,23 @@ export default function Index() {
 
   })
 
-  console.log(globalFilter)
-
   return (
     <>
     <Box>
+      <Flex align="center" mb={10} p={4} borderRadius="md" >
+        <Heading>Visor de mensajes</Heading>
+        <Spacer />
+        {user && (
+          <Flex align="center" gap={4}>
+            <Text fontSize="md">
+              Bienvenido, <strong>{user.firstName} {user.lastName}</strong>
+            </Text>
+            <Button colorScheme="red" size="sm" onClick={handleLogout}>
+              Cerrar sesión
+            </Button>
+          </Flex>
+        )}
+      </Flex>
       <Filter
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
