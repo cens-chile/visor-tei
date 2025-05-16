@@ -108,9 +108,16 @@ export default function Index() {
 
   return (
     <>
-    <Box>
+    <Box className='containerBox'
+      mx={"auto"}
+      mt={10}
+      bg="gray.900"
+      color="white"
+      borderRadius="lg"
+      boxShadow="lg"
+      w={table.getTotalSize()}>
       <Flex align="center" mb={10} p={4} borderRadius="md" >
-        <Heading>Visor de mensajes</Heading>
+        <Heading alignContent="center" className='header'>Visor de mensajes</Heading>
         <Spacer />
         {user && (
           <Flex align="center" gap={4}>
@@ -163,7 +170,7 @@ export default function Index() {
           </Box>)
         }
       </Box>
-      <Text m={2}>
+      <Text mt={5}>
         Página {table.getState().pagination.pageIndex + 1} de {" "}
         {table.getPageCount()}
       </Text>

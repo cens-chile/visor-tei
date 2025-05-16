@@ -12,9 +12,7 @@ const router = createBrowserRouter([
             <>
                 <PageTitle title="Visor | Inicio"/>
                 <ProtectedRoute>
-                    <Box maxW={1000} mx="auto" px={6} pt={24} fontSize="md">
-                        <Index />
-                    </Box>
+                    <Index />
                 </ProtectedRoute>
             </>
         ),
