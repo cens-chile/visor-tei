@@ -62,7 +62,16 @@ export default function LoginForm() {
             <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
             <FormErrorMessage>{errorMsg}</FormErrorMessage>
           </FormControl>
-          <Button type="submit" colorScheme="teal" width="full">Ingresar</Button>
+          <Button type="submit" 
+            _dark={{
+            bg: "gray.700",
+            color: "white",
+            _hover: { bg: "gray.600" },
+            }} 
+            width="full"
+          >
+          Ingresar
+          </Button>
         </VStack>
       </form>
     </Box>

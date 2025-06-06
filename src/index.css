@@ -1,16 +1,9 @@
-html, body {
-  background-color: gray.900;
-  color: white.800;
-}
-
 svg {
   cursor: pointer;
 }
 
 .table{
   border: 1px solid #424242;
-  overflow-x: auto;
-  display: flex;
 }
 
 .tr{
@@ -20,7 +13,10 @@ svg {
 }
 
 .th, .td { 
-  box-shadow: inset 0 0 0 1px #424242; 
+  box-shadow: inset 0 0 0 1px #424242;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
 }
 
 .th {
@@ -35,4 +31,23 @@ svg {
   text-align: center;
   color: #c0c0c0;
   background-color: #2d3748;
+}
+
+.modal-content {
+  margin: 12rem auto;
+  width: 75% !important;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header{
+  background-color: #c0c0c089;
+  color: #ffffff;
+  font-weight: bold;
+  text-align: center;
+}
+
+.modal-close-button{
+  margin: 5px;
 }

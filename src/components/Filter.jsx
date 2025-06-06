@@ -9,8 +9,8 @@ const Filter = ({globalFilter,setGlobalFilter}) => {
 
     return(
         <>
-        <HStack mb={5}>
-            <InputGroup size="sm" maxW="12rem" startElement={<LuSearch/>}>
+        <HStack mb={5} justifyContent={"center"}>
+            <InputGroup size="sm" maxW="20rem" startElement={<LuSearch/>}>
                 <Input
                 type="text"
                 variant="filled"

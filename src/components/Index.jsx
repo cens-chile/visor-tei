@@ -18,6 +18,7 @@ import {
   Text
 } from '@chakra-ui/react';
 import DATA from '../hooks/data.js' 
+import Pagination from './Pagination.jsx'
 import Filter from './Filter.jsx'
 import SortIcon from './icons/SortIcon.jsx'
 import InfoModal from './InfoModal.jsx'
@@ -108,9 +109,10 @@ export default function Index() {
 
   return (
     <>
-    <Box className='containerBox'
+    <Box
       mx={"auto"}
-      mt={10}
+      my={6}
+      py={3}
       bg="gray.900"
       color="white"
       borderRadius="lg"
@@ -124,7 +126,13 @@ export default function Index() {
             <Text fontSize="md">
               Bienvenido, <strong>{user.firstName} {user.lastName}</strong>
             </Text>
-            <Button colorScheme="red" size="sm" onClick={handleLogout}>
+            <Button _dark={{
+              bg: "gray.700",
+              color: "white",
+              _hover: { bg: "gray.600" },
+              }} 
+              size="sm" onClick={handleLogout}
+            >
               Cerrar sesión
             </Button>
           </Flex>
@@ -134,7 +142,7 @@ export default function Index() {
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
       />
-      <Box classname="table" w={table.getTotalSize()}>
+      <Box className="table" w={table.getTotalSize()}>
         {table.getHeaderGroups().map( (headerGroup) =>
          <Box className='tr' key={headerGroup.id}>
           {headerGroup.headers.map ( (header) =>
@@ -170,24 +178,13 @@ export default function Index() {
           </Box>)
         }
       </Box>
-      <Text mt={5}>
-        Página {table.getState().pagination.pageIndex + 1} de {" "}
-        {table.getPageCount()}
-      </Text>
-      <ButtonGroup size="sm" isAttached variant="outline">
-        <Button
-            onClick={() => table.previousPage()}
-            isDisabled={!table.getCanPreviousPage()}
-          >
-            {"<"}
-          </Button>
-          <Button
-            onClick={() => table.nextPage()}
-            isDisabled={!table.getCanNextPage()}
-          >
-            {">"}
-          </Button>
-      </ButtonGroup>
+      <Flex direction="column" align="center" justify="center" mt={5} gap={4}>
+        <Pagination
+          pageIndex={table.getState().pagination.pageIndex}
+          pageCount={table.getPageCount()}
+          setPageIndex={(index) => table.setPageIndex(index)}
+        />
+      </Flex>
     </Box>
       
     </>
