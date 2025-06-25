@@ -8,44 +8,27 @@ import {
   Heading
 } from "@chakra-ui/react";
 import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/form-control';
-import { usuarios } from "../hooks/data";
-import { createFakeJwt, parseJwt } from "../hooks/login";
+import { getToken } from "../hooks/functions";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setErrorMsg(''); 
 
-    const user = usuarios.find(
-      (u) => u.username === username && u.password === password
-    );
+    const token = await getToken(username, password);
 
-    if (!user) {
-      setErrorMsg("Usuario o contraseña inválidos.");
-      return;
+    if (token) {
+      localStorage.setItem('token', token.access);
+      localStorage.setItem('refreshToken', token.refresh)
+      localStorage.setItem('username', username);
+      window.location.href = '/';
+    } else {
+      setErrorMsg('Usuario o contraseña incorrectos');
     }
-
-    const payload = {
-      username: user.username,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      email: user.email,
-      exp: Math.floor(Date.now() / 1000) + 3600, // expira en 1 hora
-    };
-
-    const token = createFakeJwt(payload);
-    const decoded = parseJwt(token);
-
-    localStorage.setItem("token", token);
-    localStorage.setItem("username", decoded.username);
-    localStorage.setItem("first_name", decoded.first_name);
-    localStorage.setItem("last_name", decoded.last_name);
-    localStorage.setItem("email", decoded.email);
-
-    window.location.href = "/";
   };
 
   return (

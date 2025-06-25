@@ -17,37 +17,73 @@ import {
   Spacer,
   Text
 } from '@chakra-ui/react';
-import DATA from '../hooks/data.js' 
 import Pagination from './Pagination.jsx'
 import Filter from './Filter.jsx'
 import SortIcon from './icons/SortIcon.jsx'
 import InfoModal from './InfoModal.jsx'
-
+import {refreshToken, logout, getMessages} from '../hooks/functions'
 
 export default function Index() {
 
-  const [data, setData] = useState(DATA)
+  const [data, setData] = useState([])
   const [globalFilter, setGlobalFilter] = useState("")
-  const [user, setUser] = useState(null);
+  const [userName, setUserName] = useState("");
+
+  const fetchMessages = async () => {
+    const result = await getMessages();
+    if (result) {
+      setData(result.results);
+    }
+  };
+
+  const formatDate = (isoString) => {
+    if (!isoString) return ''; 
+
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return 'Fecha inválida'; 
+
+    const time = date.toLocaleTimeString('es-CL', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${time}\n${day}-${month}-${year}`;
+  };
 
   useEffect(() => {
     const username = localStorage.getItem('username');
-    const firstName = localStorage.getItem('first_name');
-    const lastName = localStorage.getItem('last_name');
-
-    if (username && firstName && lastName) {
-      setUser({ username, firstName, lastName });
+    if (username) {
+      setUserName(username);
     }
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+    refreshToken();
+    }, 600000); 
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    fetchMessages();
+    const interval = setInterval(fetchMessages, 60000); 
+    return () => clearInterval(interval);
   }, []);
 
   const columns = [
     {
-      accessorKey: 'idMensaje', 
+      accessorKey: 'id_mensaje', 
       header: 'ID Mensaje', 
       cell: (props) => <p>{props.getValue()}</p>
     },
     {
-      accessorKey: 'idInterconsulta', 
+      accessorKey: 'id_interconsulta', 
       header: 'ID Interconsulta', 
       cell: (props) => <p>{props.getValue()}</p>
     },
@@ -57,19 +93,19 @@ export default function Index() {
       cell: (props) => <p>{props.getValue()}</p>
     },
     {
-      accessorKey: 'origen', 
+      accessorKey: 'organizacion', 
       header: 'Origen del mensaje', 
       cell: (props) => <p>{props.getValue()}</p>
     },
     {
-      accessorKey: 'fechaEnvio', 
+      accessorKey: 'fecha_envio', 
       header: 'Fecha envío', 
-      cell: (props) => <p>{props.getValue()}</p>
+      cell: (props) => <p style={{ whiteSpace: 'pre-line' }}>{formatDate(props.getValue())}</p>
     },
     {
-      accessorKey: 'fechaRecepcion', 
+      accessorKey: 'fecha_recepcion', 
       header: 'Fecha recepción', 
-      cell: (props) => <p>{props.getValue()}</p>
+      cell: (props) => <p style={{ whiteSpace: 'pre-line' }}>{formatDate(props.getValue())}</p>
     },
     {
       accessorKey: 'estado', 
@@ -77,16 +113,17 @@ export default function Index() {
       cell: (props) => <p>{props.getValue()}</p>
     },
     {
-      accessorKey: 'info', 
-      header: 'Información', 
+      accessorKey: 'mensaje_resultado', 
+      header: 'Mensaje resultado', 
+      cell: (props) => <InfoModal info={props.getValue()} />
+    },
+    {
+      accessorKey: 'mensaje_resultado_error', 
+      header: 'Mensaje resultado (error)', 
       cell: (props) => <InfoModal info={props.getValue()} />
     }
   ]
 
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.reload();
-  };
 
   const table = useReactTable({
     data,
@@ -121,17 +158,17 @@ export default function Index() {
       <Flex align="center" mb={10} p={4} borderRadius="md" >
         <Heading alignContent="center" className='header'>Visor de mensajes</Heading>
         <Spacer />
-        {user && (
+        {userName && (
           <Flex align="center" gap={4}>
             <Text fontSize="md">
-              Bienvenido, <strong>{user.firstName} {user.lastName}</strong>
+              Bienvenido, <strong>{userName}</strong>
             </Text>
             <Button _dark={{
               bg: "gray.700",
               color: "white",
               _hover: { bg: "gray.600" },
               }} 
-              size="sm" onClick={handleLogout}
+              size="sm" onClick={logout}
             >
               Cerrar sesión
             </Button>
