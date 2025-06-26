@@ -28,10 +28,18 @@ export default function Index() {
   const [data, setData] = useState([])
   const [globalFilter, setGlobalFilter] = useState("")
   const [userName, setUserName] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filters, setFilters] = useState({});
+  const [selectedField, setSelectedField] = useState("search");
 
   const fetchMessages = async () => {
-    const result = await getMessages();
-    if (result) {
+    const filters = searchTerm.trim()
+      ? { [selectedField]: searchTerm.trim() }
+      : {};
+
+    const result = await getMessages({ filters });
+
+    if (result && result.results) {
       setData(result.results);
     }
   };
@@ -71,10 +79,21 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
-    fetchMessages();
+    if (searchTerm.trim() !== '') return;
+
+    fetchMessages(); 
     const interval = setInterval(fetchMessages, 60000); 
+
     return () => clearInterval(interval);
-  }, []);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      fetchMessages();
+    }, 300); 
+
+    return () => clearTimeout(delay);
+  }, [searchTerm, selectedField]);
 
   const columns = [
     {
@@ -95,6 +114,11 @@ export default function Index() {
     {
       accessorKey: 'organizacion', 
       header: 'Origen del mensaje', 
+      cell: (props) => <p>{props.getValue()}</p>
+    },
+    {
+      accessorKey: 'software', 
+      header: 'Software', 
       cell: (props) => <p>{props.getValue()}</p>
     },
     {
@@ -124,6 +148,9 @@ export default function Index() {
     }
   ]
 
+  const filterableFields = ['evento', 'estado', 'organizacion', 'id_interconsulta', 'software', 'fecha_envio', 'fecha_recepcion' ];
+
+  const searchableColumns = columns.filter(col => filterableFields.includes(col.accessorKey));
 
   const table = useReactTable({
     data,
@@ -176,8 +203,23 @@ export default function Index() {
         )}
       </Flex>
       <Filter
-        globalFilter={globalFilter}
-        setGlobalFilter={setGlobalFilter}
+        value={searchTerm}
+        selectedField={selectedField}
+        onChange={(value) => {
+          setSearchTerm(value);
+          setFilters((prev) => ({
+            ...prev,
+            [selectedField === 'search' ? 'search' : selectedField]: value || undefined,
+          }));
+        }}
+        onFieldChange={(field) => {
+          setSelectedField(field);
+          setFilters((prev) => ({
+            ...prev,
+            [field === 'search' ? 'search' : field]: searchTerm || undefined,
+          }));
+        }}
+        options={searchableColumns} 
       />
       <Box className="table" w={table.getTotalSize()}>
         {table.getHeaderGroups().map( (headerGroup) =>
