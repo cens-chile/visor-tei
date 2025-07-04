@@ -1,11 +1,45 @@
 import axios from 'axios';
-import apiJSON from '../config/config.json'
+import config from '../config/config.json'
 
-const api_url = apiJSON.api_url;
+const api_url = config.api_url;
 
 const handleLogout = () => {
   localStorage.clear();
   window.location.reload();
+};
+
+export const handleOnIdle = async () => {
+  await logout();
+};
+
+
+const checkTokenStatus = async () => {
+  const token = localStorage.getItem('token');
+  if (!token) return false;
+
+  try {
+    const response = await axios.get(`${api_url}api/check/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true
+    });
+
+    const { status } = response.data;
+
+    if (status === 'ok') {
+      return true;
+    } else {
+      console.warn('Token no válido o expirado:', status);
+      handleLogout();
+      return false;
+    }
+  } catch (error) {
+    console.error('Error al verificar el token:', error);
+    handleLogout();
+    return false;
+  }
 };
 
 export const getToken = async (user, pass) => {
@@ -33,6 +67,11 @@ export const getToken = async (user, pass) => {
 };
 
 export const refreshToken = async () => {
+
+  const tokenStatusOk = await checkTokenStatus();
+
+  if (!tokenStatusOk) return null;
+
   const refreshToken = localStorage.getItem('refreshToken');
   if (!refreshToken) return null;
 
@@ -68,6 +107,10 @@ export const refreshToken = async () => {
 
 export const logout = async () => {
 
+  const tokenStatusOk = await checkTokenStatus(); 
+
+  if (!tokenStatusOk) return;
+
   const refreshToken = localStorage.getItem('refreshToken');
   const token = localStorage.getItem('token');
 
@@ -92,7 +135,7 @@ export const logout = async () => {
 }
 
 
-export const getMessages = async ({ limit = 200, offset = 0, filters = {} } = {}) => {
+export const getMessages = async ({ordering , limit = config.defaultLimit, offset = config.defaultOffset, ...filters } = {}) => {
   const token = localStorage.getItem('token');
   if (!token) return null;
 
@@ -107,6 +150,7 @@ export const getMessages = async ({ limit = 200, offset = 0, filters = {} } = {}
         params:{
           limit,
           offset, 
+          ordering,
           ...filters
         },
         withCredentials: true

@@ -35,12 +35,12 @@ export default function Filter ({ value, onChange, selectedField, onFieldChange,
                 {isCampoActivo ? <LuFilterX /> : <LuFilter />}
             </Button>
             {selectedField !== 'search' && (
-                <NativeSelect.Root width="10rem"
-                maxW="10rem"
+                <NativeSelect.Root width="11rem"
+                maxW="12rem"
                 value={selectedField}
                 onChange={(e) => onFieldChange(e.target.value)}
                 >
-                    <NativeSelect.Field placeholder="Buscar por..." >
+                    <NativeSelect.Field>
                         {options.map((col) => (
                             <option key={col.accessorKey} value={col.accessorKey}>
                                 {col.header}
