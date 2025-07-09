@@ -22,8 +22,13 @@ export default function Filter ({ value, onChange, selectedField, onFieldChange,
                 _dark={{
                     bg: "gray.700",
                     color: "white",
-                    _hover: { bg: "gray.600" },
+                    _hover: { bg: "gray.600" }
                 }}
+                _light={{
+                    bg: "#006FB3",
+                    color: "white",
+                    _hover: { bg: "#0083d3" }
+                }}  
                 onClick={() => {
                     if (isCampoActivo) {
                         onFieldChange('search'); 
@@ -53,7 +58,6 @@ export default function Filter ({ value, onChange, selectedField, onFieldChange,
             <InputGroup size="sm" maxW="20rem" startElement={<LuSearch/>}>
                 <Input
                 type="text"
-                variant="filled"
                 placeholder={`Buscar...`}
                 borderRadius={5}
                 value={value}

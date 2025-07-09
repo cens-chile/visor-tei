@@ -24,10 +24,15 @@ export default function InfoModal({ info }) {
     <>
       <Button size="sm" onClick={handleClick} 
         _dark={{
-        bg: "gray.700",
-        color: "white",
-        _hover: { bg: "gray.600" },
+          bg: "gray.700",
+          color: "white",
+          _hover: { bg: "gray.600" }
         }}
+        _light={{
+          bg: "#006FB3",
+          color: "white",
+          _hover: { bg: "#0083d3" }
+        }} 
       >
         Ver
       </Button>

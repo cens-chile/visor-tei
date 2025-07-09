@@ -1,4 +1,5 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import { LightMode } from "./components/ui/color-mode"
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import PageTitle from "./PageTitle";
 import ProtectedRoute from "./ProtectedRoute";
@@ -12,7 +13,9 @@ const router = createBrowserRouter([
             <>
                 <PageTitle title="Visor | Inicio"/>
                 <ProtectedRoute>
-                    <Index />
+                    <LightMode>
+                        <Index />
+                    </LightMode>
                 </ProtectedRoute>
             </>
         ),
@@ -22,9 +25,11 @@ const router = createBrowserRouter([
         element: (
           <>
             <PageTitle title="Visor TEI | Inicio de Sesión" />
-            <Box>
-                <Login/>
-            </Box>
+            <LightMode>
+                <Box>
+                    <Login/>
+                </Box>
+            </LightMode>
           </>
         ),
     }

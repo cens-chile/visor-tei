@@ -1,32 +1,25 @@
 import { useState, useEffect } from 'react'
 import { IdleTimerProvider } from 'react-idle-timer';
 import { 
-    flexRender, 
-    getCoreRowModel, 
-    getFilteredRowModel, 
-    getPaginationRowModel, 
-    getSortedRowModel, 
-    useReactTable 
+  flexRender, 
+  getCoreRowModel, 
+  getFilteredRowModel, 
+  getPaginationRowModel, 
+  getSortedRowModel, 
+  useReactTable 
 } from '@tanstack/react-table'
-import {
-  Box,
-  Button, 
-  Icon,
-  Flex,
-  Heading,
-  Spacer,
-  Text
-} from '@chakra-ui/react';
+import { Box, Icon, Flex } from '@chakra-ui/react';
 import Pagination from './Pagination.jsx'
 import Filter from './Filter.jsx'
 import InfoModal from './InfoModal.jsx'
+import Header from './Header.jsx'
+import Footer from './Footer.jsx'
 import { LuArrowDown, LuArrowUp, LuArrowDownUp } from "react-icons/lu";
-import {refreshToken, logout, getMessages, handleOnIdle} from '../hooks/functions'
+import {refreshToken, getMessages, handleOnIdle} from '../hooks/functions'
 
 export default function Index() {
 
   const [data, setData] = useState([])
-  const [userName, setUserName] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({});
   const [selectedField, setSelectedField] = useState("search");
@@ -63,12 +56,7 @@ export default function Index() {
     return `${time}\n${day}-${month}-${year}`;
   };
 
-  useEffect(() => {
-    const username = localStorage.getItem('username');
-    if (username) {
-      setUserName(username);
-    }
-  }, []);
+  
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -190,32 +178,19 @@ export default function Index() {
         mx={"auto"}
         my={6}
         py={3}
-        bg="gray.900"
-        color="white"
+        _dark={{
+          bg: "gray.700",
+          color: "white"
+        }}
+        _light={{
+          bg: "#ffffff",
+          color: "black"
+        }}
         borderRadius="lg"
         boxShadow="lg"
         w={table.getTotalSize()}
         >
-        <Flex align="center" mb={10} p={4} borderRadius="md" >
-          <Heading alignContent="center" className='header'>Visor de mensajes</Heading>
-          <Spacer />
-          {userName && (
-            <Flex align="center" gap={4}>
-              <Text fontSize="md">
-                Bienvenido, <strong>{userName}</strong>
-              </Text>
-              <Button _dark={{
-                bg: "gray.700",
-                color: "white",
-                _hover: { bg: "gray.600" },
-                }} 
-                size="sm" onClick={logout}
-              >
-                Cerrar sesión
-              </Button>
-            </Flex>
-          )}
-        </Flex>
+        <Header/>
         <Filter
           value={searchTerm}
           selectedField={selectedField}
@@ -239,7 +214,16 @@ export default function Index() {
           {table.getHeaderGroups().map( (headerGroup) =>
           <Box className='tr' key={headerGroup.id}>
             {headerGroup.headers.map ( (header) =>
-            <Box className='th' w={header.getSize()} key={header.id}>
+            <Box className='th' w={header.getSize()} key={header.id}
+              _dark={{
+                bg: "gray.700",
+                color: "white"
+              }}
+              _light={{
+                bg: "#e1e1e1",
+                color: "black"
+              }}
+            >
               {header.column.columnDef.header}   
 
               {header.column.getCanSort() && (
@@ -281,6 +265,7 @@ export default function Index() {
           />
         </Flex>
       </Box>        
+      <Footer/>
     </IdleTimerProvider>
   )
 }

@@ -8,6 +8,7 @@ import {
   Heading
 } from "@chakra-ui/react";
 import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/form-control';
+import { ColorModeButton } from "../components/ui/color-mode"
 import { getToken } from "../hooks/functions";
 
 export default function LoginForm() {
@@ -32,7 +33,16 @@ export default function LoginForm() {
   };
 
   return (
-    <Box maxW="md" mx="auto" mt="100px" p="6" borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="gray.800" color="white">
+    <Box maxW="md" mx="auto" mt="100px" p="6" borderWidth="1px" borderRadius="lg" boxShadow="lg" 
+    _dark={{
+      bg: "gray.700",
+      color: "white"
+    }}
+    _light={{
+      bg: "#ffffff",
+      color: "black"
+    }}
+    >
       <Heading mb="4" mx="auto" width="50%">Iniciar sesión</Heading>
       <form onSubmit={handleLogin}>
         <VStack spacing="4">
@@ -47,10 +57,15 @@ export default function LoginForm() {
           </FormControl>
           <Button type="submit" 
             _dark={{
-            bg: "gray.700",
-            color: "white",
-            _hover: { bg: "gray.600" },
-            }} 
+              bg: "gray.700",
+              color: "white",
+              _hover: { bg: "gray.600" },
+            }}
+            _light={{
+              bg: "#006FB3",
+              color: "white",
+              _hover: { bg: "#0083d3" },
+            }}  
             width="full"
           >
           Ingresar
