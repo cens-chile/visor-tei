@@ -265,8 +265,8 @@ Link al Proyecto: [https://github.com/cens-chile/visor-tei](https://github.com/c
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[license-shield]: https://img.shields.io/badge/Apache-LICENSE-as?style=for-the-badge&logo=apache
-[license-url]: https://github.com/cens-chile/visor-tei/blob/master/LICENSE.txt
+[license-shield]: https://img.shields.io/badge/MIT-LICENSE-green?style=for-the-badge
+[license-url]: https://github.com/cens-chile/visor-tei/blob/master/LICENSE.md
 [linkedin-shield]: https://img.shields.io/badge/cens-chile-red?style=for-the-badge&labelColor=blue
 [linkedin-url]: https://www.linkedin.com/company/cens-chile/
 [Git-scm.com]: https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white
