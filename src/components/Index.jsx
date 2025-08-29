@@ -188,7 +188,7 @@ export default function Index() {
         }}
         borderRadius="lg"
         boxShadow="lg"
-        w={table.getTotalSize()}
+        w={"90%"}
         >
         <Header/>
         <Filter
@@ -210,53 +210,67 @@ export default function Index() {
           }}
           options={searchableColumns} 
         />
-        <Box className="table" w={table.getTotalSize()}>
-          {table.getHeaderGroups().map( (headerGroup) =>
-          <Box className='tr' key={headerGroup.id}>
-            {headerGroup.headers.map ( (header) =>
-            <Box className='th' w={header.getSize()} key={header.id}
-              _dark={{
-                bg: "gray.700",
-                color: "white"
-              }}
-              _light={{
-                bg: "#e1e1e1",
-                color: "black"
-              }}
-            >
-              {header.column.columnDef.header}   
-
-              {header.column.getCanSort() && (
-                <>
-                  <Icon
-                    as={LuArrowDownUp}
-                    mx={2}
-                    boxSize="1rem"
-                    cursor="pointer"
-                    onClick={header.column.getToggleSortingHandler()}
-                  />
-                  {header.column.getIsSorted() === 'asc' && (
-                    <Icon as={LuArrowUp} boxSize="1rem" ml={1} />
+        <Flex className="table" direction="column" mx={"auto"} w={"100%"}>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <Flex className="tr" key={headerGroup.id} w={"100%"}>
+              {headerGroup.headers.map((header) => (
+                <Box
+                  className="th"
+                  flex="1" 
+                  key={header.id}
+                  _dark={{
+                    bg: "gray.700",
+                    color: "white"
+                  }}
+                  _light={{
+                    bg: "#e1e1e1",
+                    color: "black"
+                  }}
+                  p={2}
+                  minW={0}
+                  flexShrink={1} 
+                  textAlign="center" 
+                >
+                  {header.column.columnDef.header}
+                  {header.column.getCanSort() && (
+                    <>
+                      <Icon
+                        as={LuArrowDownUp}
+                        mx={2}
+                        boxSize="1rem"
+                        cursor="pointer"
+                        onClick={header.column.getToggleSortingHandler()}
+                      />
+                      {header.column.getIsSorted() === 'asc' && (
+                        <Icon as={LuArrowUp} boxSize="1rem" ml={1} />
+                      )}
+                      {header.column.getIsSorted() === 'desc' && (
+                        <Icon as={LuArrowDown} boxSize="1rem" ml={1} />
+                      )}
+                    </>
                   )}
-                  {header.column.getIsSorted() === 'desc' && (
-                    <Icon as={LuArrowDown} boxSize="1rem" ml={1} />
-                  )}
-                </>
-              )}
-            </Box>
-            )}
-          </Box>
-          )}
-          {
-            table.getRowModel().rows.map(row => 
-            <Box className='tr' key={row.id}>
-              {row.getVisibleCells().map(cell => 
-              <Box className='td' w={cell.column.getSize()} key={cell.id}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </Box>)}
-            </Box>)
-          }
-        </Box>
+                </Box>
+              ))}
+            </Flex>
+          ))}
+          {table.getRowModel().rows.map((row) => (
+            <Flex className="tr" key={row.id} w={"100%"}>
+              {row.getVisibleCells().map((cell) => (
+                <Box
+                  className="td"
+                  flex="1" 
+                  key={cell.id}
+                  minW={0}
+                  flexShrink={1}
+                  p={2} 
+                  textAlign="center" 
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </Box>
+              ))}
+            </Flex>
+          ))}
+        </Flex>
         <Flex direction="column" align="center" justify="center" mt={5} gap={4}>
           <Pagination
             pageIndex={table.getState().pagination.pageIndex}
