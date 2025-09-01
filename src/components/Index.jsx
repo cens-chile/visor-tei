@@ -227,27 +227,26 @@ export default function Index() {
                     color: "black"
                   }}
                   p={2}
+                  fontSize={"0.8rem"}
                   minW={0}
                   flexShrink={1} 
                   textAlign="center" 
                 >
                   {header.column.columnDef.header}
                   {header.column.getCanSort() && (
-                    <>
-                      <Icon
-                        as={LuArrowDownUp}
-                        mx={2}
-                        boxSize="1rem"
-                        cursor="pointer"
-                        onClick={header.column.getToggleSortingHandler()}
-                      />
-                      {header.column.getIsSorted() === 'asc' && (
-                        <Icon as={LuArrowUp} boxSize="1rem" ml={1} />
-                      )}
-                      {header.column.getIsSorted() === 'desc' && (
-                        <Icon as={LuArrowDown} boxSize="1rem" ml={1} />
-                      )}
-                    </>
+                    <Icon
+                      as={
+                        header.column.getIsSorted() === "asc"
+                          ? LuArrowUp
+                          : header.column.getIsSorted() === "desc"
+                          ? LuArrowDown
+                          : LuArrowDownUp
+                      }
+                      mx={1}
+                      boxSize="0.8rem"
+                      cursor="pointer"
+                      onClick={header.column.getToggleSortingHandler()}
+                    />
                   )}
                 </Box>
               ))}
@@ -262,6 +261,7 @@ export default function Index() {
                   key={cell.id}
                   minW={0}
                   flexShrink={1}
+                  fontSize={"0.8rem"}
                   p={2} 
                   textAlign="center" 
                 >

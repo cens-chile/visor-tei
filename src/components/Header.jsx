@@ -16,7 +16,7 @@ export default function Header() {
 
     return(
         <Flex align="center" mb={10} p={4} borderRadius="md" minW={0} wrap="wrap">
-            <Image src={Logo_Minsal} alt="Logo" h="6rem" mt={2} />
+            <Image src={Logo_Minsal} alt="Logo" h="5rem" mt={2} />
             <Heading ml={4} flexShrink={1} minW={0} noOfLines={1}>Visor de mensajes</Heading>
             <Spacer/>
             {userName && (
