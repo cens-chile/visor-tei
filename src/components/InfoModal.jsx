@@ -9,11 +9,27 @@ import {
 } from '@chakra-ui/modal';
 import { useDisclosure } from '@chakra-ui/hooks';
 import { Button, Box } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useState, useMemo} from 'react';
 
 export default function InfoModal({ info }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedInfo, setSelectedInfo] = useState(null);
+
+  const formattedJson = useMemo(() => {
+    if (!selectedInfo) return ''; 
+
+    let parsedData = selectedInfo;
+
+    while (typeof parsedData === 'string') {
+      try {
+        parsedData = JSON.parse(parsedData);
+      } catch (error) {
+        break;
+      }
+    }
+    return JSON.stringify(parsedData, null, 2);
+
+  }, [selectedInfo]); 
 
   const handleClick = () => {
     setSelectedInfo(info);
@@ -47,7 +63,7 @@ export default function InfoModal({ info }) {
           bg='none'
           backdropFilter='auto'
           backdropInvert='20%'
-          backdropBlur='2px'
+          backdropBlur='100px'
         />
         <ModalContent 
           bg="gray.900" 
@@ -67,7 +83,7 @@ export default function InfoModal({ info }) {
               borderRadius="md"
               overflowY="auto"
             >
-              {JSON.stringify(selectedInfo, null, 2)}
+              {formattedJson}
             </Box>
           </ModalBody>
           <ModalFooter>
