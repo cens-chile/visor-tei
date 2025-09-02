@@ -1,7 +1,4 @@
-networks:
-  mensajeria-productor-tei_mensajeria-net:
-    external: true
-      
+     
 services:
   visor-tei:
     build:
@@ -9,5 +6,3 @@ services:
     image: visor-tei:latest
     ports:
       - 3000:80
-    networks:
-      - mensajeria-productor-tei_mensajeria-net
