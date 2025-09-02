@@ -168,12 +168,9 @@ npm install
 5. Crear archivo config.json en la carpeta config, con las siguientes variables
 ```bash
 {
-    "api_url": "http://0.0.0.0:8002/", 
-    "defaultLimit": 200,
-    "defaultOffset": 0
+    "api_url": "http://0.0.0.0:8002/"
 }
 ```
-el **defaultLimit** y el **defaultOffset** definira la cantidad de mensajes que se reciban al pedir los mensajes a la API
 
 ### Desarrollo
 
@@ -182,9 +179,7 @@ el **defaultLimit** y el **defaultOffset** definira la cantidad de mensajes que 
 
 ```json
 {
-    "api_url": "http://localhost:8002/", 
-    "defaultLimit": 200,
-    "defaultOffset": 0
+    "api_url": "http://localhost:8002/"
 }
 ```
 * Opción 1: Ejecutar la versión en vivo

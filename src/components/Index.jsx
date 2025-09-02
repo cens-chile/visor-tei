@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef} from 'react'
 import { IdleTimerProvider } from 'react-idle-timer';
 import { 
   flexRender, 
@@ -18,24 +18,43 @@ import { LuArrowDown, LuArrowUp, LuArrowDownUp } from "react-icons/lu";
 import {refreshToken, getMessages, handleOnIdle} from '../hooks/functions'
 
 export default function Index() {
-
-  const [data, setData] = useState([])
+  
+  const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filters, setFilters] = useState({});
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedField, setSelectedField] = useState("search");
-  const [sorting, setSorting] = useState([]);
+  const [sorting, setSorting] = useState([]); 
+  const [pageIndex, setPageIndex] = useState(0); 
+  const [total, setTotal] = useState(0);
 
-  const fetchMessages = async ({ ordering } = {}) => {
-    const filters = searchTerm.trim()
-      ? { [selectedField]: searchTerm.trim() }
-      : {};
+  const limit = 10;
+  const pageCount = Math.max(1, Math.ceil(total / limit));
 
-    const result = await getMessages({ ordering, ...filters});
+  const ordering = useMemo(() => {
+    const s = sorting?.[0];
+    if (!s) return undefined;
+    const field = s.id;
+    return s.desc ? `-${field}` : field;
+  }, [sorting]);
 
-    if (result && result.results) {
-      setData(result.results);
+  const fetchMessages = useCallback(async () => {
+    const filters = debouncedSearch ? { [selectedField]: debouncedSearch } : {};
+    const offset = pageIndex * limit;
+
+    try {
+      const res = await getMessages({ limit, offset, ordering, ...filters });
+
+      if (res) {
+        setData(res.results ?? []);
+        setTotal(res.count ?? 0);
+      } else {
+        setData([]);
+        setTotal(0);
+      }
+    } catch (err) {
+      console.error("fetchMessages error:", err);
     }
-  };
+  }, [pageIndex, ordering, debouncedSearch, selectedField]);
 
   const formatDate = (isoString) => {
     if (!isoString) return ''; 
@@ -56,47 +75,56 @@ export default function Index() {
     return `${time}\n${day}-${month}-${year}`;
   };
 
-  
+  const prevRef = useRef({
+    ordering,
+    selectedField,
+    debouncedSearch,
+    pageIndex,
+  });
 
   useEffect(() => {
-    const interval = setInterval(async () => {
-    refreshToken();
-    }, 2*60*60*1000); 
+    const prev = prevRef.current;
+    const filtersChanged =
+      prev.ordering !== ordering ||
+      prev.selectedField !== selectedField ||
+      prev.debouncedSearch !== debouncedSearch;
 
-    return () => clearInterval(interval);
-  }, []);
+    if (filtersChanged && pageIndex !== 0) {
+      setPageIndex(0);
+      prevRef.current = {
+        ordering,
+        selectedField,
+        debouncedSearch,
+        pageIndex: 0,
+      };
+      return;
+    }
+
+    fetchMessages();
+
+    prevRef.current = { ordering, selectedField, debouncedSearch, pageIndex };
+  }, [ordering, selectedField, debouncedSearch, pageIndex, fetchMessages]);
 
   useEffect(() => {
-    if (searchTerm.trim() !== '') return;
+    const id = setInterval(() => {
+      fetchMessages();
+    }, 60_000);
+    return () => clearInterval(id);
+  }, [fetchMessages]);
 
-    fetchMessages(); 
-    const interval = setInterval(fetchMessages, 60000); 
-
-    return () => clearInterval(interval);
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setDebouncedSearch(searchTerm.trim());
+    }, 300);
+    return () => clearTimeout(t);
   }, [searchTerm]);
 
   useEffect(() => {
-    const delay = setTimeout(() => {
-      fetchMessages();
-    }, 300); 
-
-    return () => clearTimeout(delay);
-  }, [searchTerm, selectedField]);
-
-  useEffect(() => {
-    const sort = sorting[0]; 
-
-    if (sort) {
-      const field = sort.id;
-      const order = sort.desc ? `-${field}`: `${field}`;
-
-      fetchMessages({
-        ordering: order
-      });
-    }else {
-      fetchMessages(); 
-    }
-  }, [sorting]);
+    const id = setInterval(() => {
+      refreshToken();
+    }, 2 * 60 * 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
 
   const columns = [
     {
@@ -162,7 +190,9 @@ export default function Index() {
       sorting,
     },
     onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
+    manualSorting: true,
+    manualPagination: true,
+    getSortedRowModel: undefined,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -273,9 +303,9 @@ export default function Index() {
         </Flex>
         <Flex direction="column" align="center" justify="center" mt={5} gap={4}>
           <Pagination
-            pageIndex={table.getState().pagination.pageIndex}
-            pageCount={table.getPageCount()}
-            setPageIndex={(index) => table.setPageIndex(index)}
+            pageIndex={pageIndex}
+            pageCount={pageCount}
+            setPageIndex={setPageIndex}
           />
         </Flex>
       </Box>        

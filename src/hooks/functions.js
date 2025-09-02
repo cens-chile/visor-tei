@@ -135,7 +135,7 @@ export const logout = async () => {
 }
 
 
-export const getMessages = async ({ordering , limit = config.defaultLimit, offset = config.defaultOffset, ...filters } = {}) => {
+export const getMessages = async ({ordering , limit, offset, ...filters } = {}) => {
   const token = localStorage.getItem('token');
   if (!token) return null;
 
