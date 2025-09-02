@@ -177,15 +177,39 @@ el **defaultLimit** y el **defaultOffset** definira la cantidad de mensajes que 
 
 ### Desarrollo
 
-* Ejecutar la versión en vivo
+* Crear archivo config.json con las varibales de la API de mensajería
+* El archivo debe estar en la ruta **/src/config/config.json**
+
+```json
+{
+    "api_url": "http://localhost:8002/", 
+    "defaultLimit": 200,
+    "defaultOffset": 0
+}
+```
+* Opción 1: Ejecutar la versión en vivo
+
 ```bash
 npm run dev
 ```
+
 Esta quedará ejecutándose en http://localhost:5173/, siempre y cuando el puerto 5173 esté abierto, sino, lo cambiará automaticamente
+
+* Opción 2: Para ejecutar con Docker Compose
+
+```bash
+docker compose up -d
+```
+
+Esta quedará ejecutándose en http://localhost:3000/
+
+
 
 * Recompilar cambios y reiniciar servicios
 
 Los cambios se recompilan automáticamente, aunque en algunos casos, como después de importar algunos componentes, ese necesario una recarga de la página con F5 o _ctrl + shift + r_
+
+
 
 <p align="right">(<a href="#readme-top">Volver al inicio</a>)</p>
 

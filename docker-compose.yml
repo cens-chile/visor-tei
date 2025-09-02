@@ -1,0 +1,8 @@
+     
+services:
+  visor-tei:
+    build:
+      context: .
+    image: visor-tei:latest
+    ports:
+      - 3000:80
