@@ -48,3 +48,8 @@ html, body{
 .modal-close-button{
   margin: 5px;
 }
+
+.json-editor{
+  width: 100% !important;
+  max-width: none !important; 
+}

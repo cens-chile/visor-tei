@@ -4,35 +4,29 @@ import {
   ModalContent,
   ModalHeader,
   ModalFooter,
-  ModalBody,
-  ModalCloseButton
+  ModalBody
 } from '@chakra-ui/modal';
+import { JsonEditor, githubLightTheme } from 'json-edit-react'
 import { useDisclosure } from '@chakra-ui/hooks';
 import { Button, Box } from '@chakra-ui/react';
 import { useState, useMemo} from 'react';
 
 export default function InfoModal({ info }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedInfo, setSelectedInfo] = useState(null);
-
-  const formattedJson = useMemo(() => {
-    if (!selectedInfo) return ''; 
-
-    let parsedData = selectedInfo;
-
-    while (typeof parsedData === 'string') {
-      try {
-        parsedData = JSON.parse(parsedData);
-      } catch (error) {
-        break;
-      }
-    }
-    return JSON.stringify(parsedData, null, 2);
-
-  }, [selectedInfo]); 
+  const [parsedData, setParsedData] = useState(null);
 
   const handleClick = () => {
-    setSelectedInfo(info);
+    let finalData = info;
+
+    while (typeof finalData === 'string') {
+      try {
+        finalData = JSON.parse(finalData);
+      } catch {
+        break; 
+      }
+    }
+
+    setParsedData(finalData);
     onOpen();
   };
 
@@ -58,6 +52,7 @@ export default function InfoModal({ info }) {
         onClose={onClose} 
         closeOnEsc={true}
         isCentered
+        size="xl" 
       >
         <ModalOverlay
           bg='none'
@@ -66,25 +61,39 @@ export default function InfoModal({ info }) {
           backdropBlur='100px'
         />
         <ModalContent 
-          bg="gray.900" 
           color="white"
           className="modal-content"
+          height={"60vh"}
         >
           <ModalHeader className="modal-header">Información</ModalHeader>
-          <ModalBody>
-            <Box 
+          <ModalBody p={0} maxH="60vh" overflowY="auto">
+            {typeof parsedData === 'object' && parsedData !== null ? (
+            <Box as="pre" width="100%" bgColor={"gray.600"} borderRadius="md">
+              <JsonEditor
+                data={ parsedData }
+                viewOnly={true}
+                theme={githubLightTheme}
+                showArrayIndices={false}
+                showCollectionCount={false}
+                collapse={2}
+                rootFontSize={14}
+                className='json-editor'
+              />
+            </Box>
+            ):(
+            <Box
               as="pre"
               whiteSpace="pre-wrap"
               wordBreak="break-word"
-              fontFamily="monospace"
-              fontSize="0.9rem"
-              bg="gray.700"
               p={4}
+              bg="#FCFCFC"
               borderRadius="md"
-              overflowY="auto"
+              color="red.500"          
+              fontFamily="monospace"
             >
-              {formattedJson}
+              {String(parsedData)}
             </Box>
+            )}
           </ModalBody>
           <ModalFooter>
             <Button mr={3} onClick={onClose}
