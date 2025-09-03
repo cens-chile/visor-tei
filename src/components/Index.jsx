@@ -33,7 +33,7 @@ export default function Index() {
 
   const ordering = useMemo(() => {
     const s = sorting?.[0];
-    if (!s) return undefined;
+    if (!s) return "-fecha_envio";
     const field = s.id;
     return s.desc ? `-${field}` : field;
   }, [sorting]);
@@ -309,7 +309,9 @@ export default function Index() {
                           ? LuArrowUp
                           : header.column.getIsSorted() === "desc"
                           ? LuArrowDown
-                          : LuArrowDownUp
+                          : ordering === "-fecha_envio" && header.column.id === "fecha_envio"
+                            ? LuArrowDown 
+                            : LuArrowDownUp
                       }
                       mx={1}
                       boxSize="0.8rem"
