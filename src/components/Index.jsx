@@ -5,10 +5,9 @@ import {
   getCoreRowModel, 
   getFilteredRowModel, 
   getPaginationRowModel, 
-  getSortedRowModel, 
   useReactTable 
 } from '@tanstack/react-table'
-import { Box, Icon, Flex } from '@chakra-ui/react';
+import { Box, Icon, Flex, Button} from '@chakra-ui/react';
 import Pagination from './Pagination.jsx'
 import Filter from './Filter.jsx'
 import InfoModal from './InfoModal.jsx'
@@ -25,6 +24,8 @@ export default function Index() {
   const [selectedField, setSelectedField] = useState("search");
   const [sorting, setSorting] = useState([]); 
   const [pageIndex, setPageIndex] = useState(0); 
+  const [isOpen, setIsOpen] = useState(false);
+  const [modalInfo, setModalInfo] = useState(null);
   const [total, setTotal] = useState(0);
 
   const limit = 10;
@@ -55,6 +56,16 @@ export default function Index() {
       console.error("fetchMessages error:", err);
     }
   }, [pageIndex, ordering, debouncedSearch, selectedField]);
+
+  const handleOpenModal = (info) => {
+    setModalInfo(info);
+    setIsOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+    setModalInfo(null);
+  };
 
   const formatDate = (isoString) => {
     if (!isoString) return ''; 
@@ -170,12 +181,40 @@ export default function Index() {
     {
       accessorKey: 'mensaje_resultado', 
       header: 'Mensaje resultado', 
-      cell: (props) => <InfoModal info={props.getValue()} />
+      cell: (props) => 
+      <Button size="sm" onClick={() => handleOpenModal(props.getValue())}
+        _dark={{
+          bg: "gray.700",
+          color: "white",
+          _hover: { bg: "gray.600" }
+        }}
+        _light={{
+          bg: "#006FB3",
+          color: "white",
+          _hover: { bg: "#0083d3" }
+        }} 
+      >
+        Ver
+      </Button>
     },
     {
       accessorKey: 'mensaje_resultado_error', 
       header: 'Mensaje resultado (error)', 
-      cell: (props) => <InfoModal info={props.getValue()} />
+      cell: (props) => 
+      <Button size="sm" onClick={() => handleOpenModal(props.getValue())}
+        _dark={{
+          bg: "gray.700",
+          color: "white",
+          _hover: { bg: "gray.600" }
+        }}
+        _light={{
+          bg: "#006FB3",
+          color: "white",
+          _hover: { bg: "#0083d3" }
+        }} 
+      >
+        Ver
+      </Button>
     }
   ]
 
@@ -310,6 +349,11 @@ export default function Index() {
         </Flex>
       </Box>        
       <Footer/>
+      <InfoModal 
+        isOpen={isOpen} 
+        onClose={handleCloseModal} 
+        info={modalInfo} 
+      />
     </IdleTimerProvider>
   )
 }

@@ -7,46 +7,22 @@ import {
   ModalBody
 } from '@chakra-ui/modal';
 import { JsonEditor, githubLightTheme } from 'json-edit-react'
-import { useDisclosure } from '@chakra-ui/hooks';
 import { Button, Box } from '@chakra-ui/react';
-import { useState, useMemo} from 'react';
 
-export default function InfoModal({ info }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [parsedData, setParsedData] = useState(null);
+export default function InfoModal({ isOpen, onClose, info }) {
 
-  const handleClick = () => {
-    let finalData = info;
+  let finalData = info;
 
-    while (typeof finalData === 'string') {
-      try {
-        finalData = JSON.parse(finalData);
-      } catch {
-        break; 
-      }
+  while (typeof finalData === 'string') {
+    try {
+      finalData = JSON.parse(finalData);
+    } catch {
+      break; 
     }
-
-    setParsedData(finalData);
-    onOpen();
-  };
+  }
 
   return (
     <>
-      <Button size="sm" onClick={handleClick} 
-        _dark={{
-          bg: "gray.700",
-          color: "white",
-          _hover: { bg: "gray.600" }
-        }}
-        _light={{
-          bg: "#006FB3",
-          color: "white",
-          _hover: { bg: "#0083d3" }
-        }} 
-      >
-        Ver
-      </Button>
-
       <Modal 
         isOpen={isOpen} 
         onClose={onClose} 
@@ -67,10 +43,10 @@ export default function InfoModal({ info }) {
         >
           <ModalHeader className="modal-header">Información</ModalHeader>
           <ModalBody p={0} maxH="60vh" overflowY="auto">
-            {typeof parsedData === 'object' && parsedData !== null ? (
+            {typeof finalData === 'object' && finalData !== null ? (
             <Box as="pre" width="100%" bgColor={"gray.600"} borderRadius="md">
               <JsonEditor
-                data={ parsedData }
+                data={ finalData }
                 viewOnly={true}
                 theme={githubLightTheme}
                 showArrayIndices={false}
@@ -91,7 +67,7 @@ export default function InfoModal({ info }) {
               color="red.500"          
               fontFamily="monospace"
             >
-              {String(parsedData)}
+              {String(finalData)}
             </Box>
             )}
           </ModalBody>
