@@ -8,7 +8,6 @@ import {
   Heading
 } from "@chakra-ui/react";
 import { FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/form-control';
-import { ColorModeButton } from "../components/ui/color-mode"
 import { getToken } from "../hooks/functions";
 
 export default function LoginForm() {
@@ -33,7 +32,10 @@ export default function LoginForm() {
   };
 
   return (
-    <Box maxW="md" mx="auto" mt="100px" p="6" borderWidth="1px" borderRadius="lg" boxShadow="lg" 
+    <>
+    <VStack spacing={3} mt="50px">
+    <Heading textAlign="center" mt="50px" color={"#0069B2"}>Visor de transacciones TEI</Heading>
+    <Box w="full" maxW="md" mx="auto" mt="20px" p="6" borderWidth="1px" borderRadius="lg" boxShadow="lg" 
     _dark={{
       bg: "gray.700",
       color: "white"
@@ -73,5 +75,7 @@ export default function LoginForm() {
         </VStack>
       </form>
     </Box>
+    </VStack>
+    </>
   );
 }
